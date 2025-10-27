@@ -26,13 +26,3 @@ variable "tags" {
   type    = map(string)
   default = {}
 }
-
-variable "databricks_host" {
-  type = string 
-}
-
-variable "databricks_token" {
-  type = string, 
-  sensitive = true 
-}
-
