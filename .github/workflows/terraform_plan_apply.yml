@@ -23,6 +23,9 @@ jobs:
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -46,6 +49,11 @@ jobs:
           else
             echo "TFVARS=envs/dev.tfvars" >> $GITHUB_OUTPUT
           fi
+      
+      - name: Export Databricks env
+        run: |
+          echo "TF_VAR_databricks_host=${DATABRICKS_HOST}"  >> $GITHUB_ENV
+          echo "TF_VAR_databricks_token=${DATABRICKS_TOKEN}" >> $GITHUB_ENV
 
       - name: Terraform init
         working-directory: terraform
