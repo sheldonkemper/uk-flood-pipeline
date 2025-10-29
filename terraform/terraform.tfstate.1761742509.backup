@@ -1,0 +1,114 @@
+{
+  "version": 4,
+  "terraform_version": "1.13.4",
+  "serial": 3,
+  "lineage": "8329e33b-a025-f930-640b-d3754861a325",
+  "outputs": {
+    "databricks_workspace_id": {
+      "value": "/subscriptions/aa6e4399-ffb9-442f-ba42-2794048c5388/resourceGroups/rg-uksouth-flood-dev/providers/Microsoft.Databricks/workspaces/dbw-flood-dev",
+      "type": "string"
+    },
+    "databricks_workspace_url": {
+      "value": "adb-3577787633845022.2.azuredatabricks.net",
+      "type": "string"
+    },
+    "resource_group_name": {
+      "value": "rg-uksouth-flood-dev",
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "mode": "managed",
+      "type": "azurerm_databricks_workspace",
+      "name": "dbw",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "access_connector_id": null,
+            "custom_parameters": [
+              {
+                "machine_learning_workspace_id": "",
+                "nat_gateway_name": "",
+                "no_public_ip": true,
+                "private_subnet_name": "",
+                "private_subnet_network_security_group_association_id": "",
+                "public_ip_name": "",
+                "public_subnet_name": "",
+                "public_subnet_network_security_group_association_id": "",
+                "storage_account_name": "dbstorage3vtwx42xcibos",
+                "storage_account_sku_name": "Standard_GRS",
+                "virtual_network_id": "",
+                "vnet_address_prefix": ""
+              }
+            ],
+            "customer_managed_key_enabled": false,
+            "default_storage_firewall_enabled": null,
+            "disk_encryption_set_id": "",
+            "id": "/subscriptions/aa6e4399-ffb9-442f-ba42-2794048c5388/resourceGroups/rg-uksouth-flood-dev/providers/Microsoft.Databricks/workspaces/dbw-flood-dev",
+            "infrastructure_encryption_enabled": false,
+            "load_balancer_backend_address_pool_id": "",
+            "location": "uksouth",
+            "managed_disk_cmk_key_vault_id": "",
+            "managed_disk_cmk_key_vault_key_id": "",
+            "managed_disk_cmk_rotation_to_latest_version_enabled": false,
+            "managed_disk_identity": [],
+            "managed_resource_group_id": "/subscriptions/aa6e4399-ffb9-442f-ba42-2794048c5388/resourceGroups/databricks-rg-rg-uksouth-flood-dev",
+            "managed_resource_group_name": "databricks-rg-rg-uksouth-flood-dev",
+            "managed_services_cmk_key_vault_id": "",
+            "managed_services_cmk_key_vault_key_id": "",
+            "name": "dbw-flood-dev",
+            "network_security_group_rules_required": null,
+            "public_network_access_enabled": true,
+            "resource_group_name": "rg-uksouth-flood-dev",
+            "sku": "premium",
+            "storage_account_identity": [],
+            "tags": {
+              "environment": "dev",
+              "owner": "sheldon",
+              "project": "flood-monitoring"
+            },
+            "timeouts": null,
+            "workspace_id": "3577787633845022",
+            "workspace_url": "adb-3577787633845022.2.azuredatabricks.net"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "azurerm_resource_group.rg"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_resource_group",
+      "name": "rg",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "/subscriptions/aa6e4399-ffb9-442f-ba42-2794048c5388/resourceGroups/rg-uksouth-flood-dev",
+            "location": "uksouth",
+            "managed_by": "",
+            "name": "rg-uksouth-flood-dev",
+            "tags": {
+              "environment": "dev",
+              "owner": "sheldon",
+              "project": "flood-monitoring"
+            },
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo1NDAwMDAwMDAwMDAwLCJkZWxldGUiOjU0MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjo1NDAwMDAwMDAwMDAwfX0="
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}
