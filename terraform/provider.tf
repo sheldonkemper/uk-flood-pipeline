@@ -4,12 +4,11 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.117"
+      version = "~> 3.114"
     }
-    # The Databricks provider is optional for now since we don't create Databricks-managed resources yet.
     databricks = {
       source  = "databricks/databricks"
-      version = "~> 1.50"
+      version = "~> 1.55"
     }
   }
 }

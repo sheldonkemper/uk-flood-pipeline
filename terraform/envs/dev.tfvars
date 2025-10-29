@@ -1,5 +1,16 @@
 environment = "dev"
 location    = "uksouth"
 
-# Uncomment and set after first apply IF/WHEN you want to manage Databricks resources via Terraform
-# databricks_host = "https://adb-xxxxxxxxxxxxxxx.xx.azuredatabricks.net"
+# After the first apply of Azure resources, paste these from `terraform output`
+databricks_workspace_id  = "/subscriptions/aa6e4399-ffb9-442f-ba42-2794048c5388/resourceGroups/rg-uksouth-flood-dev/providers/Microsoft.Databricks/workspaces/dbw-flood-dev"
+databricks_workspace_url = "https://adb-3577787633845022.2.azuredatabricks.net"
+
+# Cluster
+cluster_name            = "single-user-dev"
+spark_version           = "13.3.x-scala2.12"
+num_workers             = 1
+autotermination_minutes = 10
+cluster_user_email      = "sheldon.kemper@outlook.com"
+
+# Optional override
+# node_type_id = "Standard_D4ds_v5"
