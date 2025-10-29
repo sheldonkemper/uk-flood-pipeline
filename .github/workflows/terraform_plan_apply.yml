@@ -15,6 +15,7 @@ on:
 jobs:
   tf:
     runs-on: ubuntu-latest
+    environment: dev        # ✅ Add this line so OIDC matches your Azure federated credential
     permissions:
       id-token: write
       contents: read
