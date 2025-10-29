@@ -27,3 +27,4 @@ resource "azurerm_databricks_workspace" "dbw" {
 
   tags = local.default_tags
 }
+
