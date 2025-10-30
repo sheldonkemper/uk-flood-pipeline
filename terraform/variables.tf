@@ -25,7 +25,9 @@ variable "resource_group_name" {
 variable "databricks_workspace_url" {
   type        = string
   description = "Workspace host URL (https://adb-xxx.azuredatabricks.net)"
+  default     = ""
 }
+
 
 # Full Azure resource ID of the Databricks workspace (required for OIDC)
 variable "databricks_workspace_id" {
