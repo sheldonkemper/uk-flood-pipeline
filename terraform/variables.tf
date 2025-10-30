@@ -21,42 +21,17 @@ variable "resource_group_name" {
   default     = "rg-uksouth-flood-dev"
 }
 
-# Workspace URL (works for both PAT and OIDC)
 variable "databricks_workspace_url" {
   type        = string
   description = "Workspace host URL (https://adb-xxx.azuredatabricks.net)"
-  default     = ""
-}
-
-# Full Azure resource ID of the Databricks workspace (required for OIDC)
-variable "databricks_workspace_id" {
-  type        = string
-  default     = ""
-  description = "Full Azure resource ID for the Databricks workspace"
 }
 
 # ======================================================
-# OIDC for Databricks (future cutover)
-# ======================================================
-variable "azure_client_id" {
-  type        = string
-  default     = ""
-  description = "Azure AD app client ID for OIDC auth to Databricks"
-}
-
-variable "azure_tenant_id" {
-  type        = string
-  default     = ""
-  description = "Azure AD tenant ID for OIDC auth"
-}
-
-# ======================================================
-# PAT authentication (temporary fallback)
+# PAT authentication
 # ======================================================
 variable "databricks_token" {
   type        = string
-  description = "Personal Access Token for Databricks authentication (temporary auth method)"
-  default     = ""
+  description = "Personal Access Token for Databricks authentication"
 }
 
 # ======================================================
@@ -70,30 +45,30 @@ variable "cluster_name" {
 
 variable "spark_version" {
   type        = string
-  description = "Databricks Runtime version used by the cluster (must match Databricks Connect)"
+  description = "Databricks Runtime version used by the cluster"
   default     = "13.3.x-scala2.12"
 }
 
 variable "node_type_id" {
   type        = string
-  description = "Optional explicit node type; leave empty to auto-select the smallest local-disk VM"
+  description = "Optional explicit node type"
   default     = ""
 }
 
 variable "num_workers" {
   type        = number
-  description = "Number of worker nodes (0 = single-node cluster)"
+  description = "Number of worker nodes"
   default     = 0
 }
 
 variable "autotermination_minutes" {
   type        = number
-  description = "Cluster auto-termination time in minutes to save cost"
-  default     = 20
+  description = "Cluster auto-termination time"
+  default     = 10
 }
 
 variable "cluster_user_email" {
   type        = string
-  description = "Workspace user who owns the SINGLE_USER cluster"
+  description = "Workspace user for SINGLE_USER mode"
   default     = "sheldon.kemper@outlook.com"
 }
