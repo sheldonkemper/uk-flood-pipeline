@@ -1,8 +1,6 @@
 environment = "dev"
 location    = "uksouth"
 
-# After the first apply of Azure resources, paste these from `terraform output`
-databricks_workspace_id  = "/subscriptions/aa6e4399-ffb9-442f-ba42-2794048c5388/resourceGroups/rg-uksouth-flood-dev/providers/Microsoft.Databricks/workspaces/dbw-flood-dev"
 databricks_workspace_url = "https://adb-3577787633845022.2.azuredatabricks.net"
 
 # Cluster
