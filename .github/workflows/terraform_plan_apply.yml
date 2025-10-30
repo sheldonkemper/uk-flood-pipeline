@@ -15,7 +15,7 @@ on:
 jobs:
   tf:
     runs-on: ubuntu-latest
-    environment: dev        # ✅ Add this line so OIDC matches your Azure federated credential
+    environment: dev
     permissions:
       id-token: write
       contents: read
@@ -29,6 +29,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Debug secrets scope
         run: |
           echo "Client ID: ${{ secrets.AZURE_CLIENT_ID }}"
@@ -41,6 +42,14 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # ✅ Add this RIGHT HERE: allows Terraform backend to auth with OIDC
+      - name: Export Azure backend auth env
+        run: |
+          echo "ARM_USE_OIDC=true" >> $GITHUB_ENV
+          echo "ARM_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
+          echo "ARM_SUBSCRIPTION_ID=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -55,7 +64,7 @@ jobs:
           else
             echo "TFVARS=envs/dev.tfvars" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Export Databricks env (PAT for now)
         run: |
           echo "TF_VAR_databricks_workspace_url=${DATABRICKS_HOST}" >> $GITHUB_ENV
@@ -68,7 +77,6 @@ jobs:
       #     echo "TF_VAR_databricks_workspace_id=${{ secrets.AZURE_DATABRICKS_WORKSPACE_ID }}" >> $GITHUB_ENV
       #     echo "TF_VAR_azure_client_id=${{ secrets.AZURE_CLIENT_ID }}" >> $GITHUB_ENV
       #     echo "TF_VAR_azure_tenant_id=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
-
 
       - name: Terraform init
         working-directory: terraform
