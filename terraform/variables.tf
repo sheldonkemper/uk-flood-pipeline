@@ -28,7 +28,6 @@ variable "databricks_workspace_url" {
   default     = ""
 }
 
-
 # Full Azure resource ID of the Databricks workspace (required for OIDC)
 variable "databricks_workspace_id" {
   type        = string
