@@ -30,6 +30,7 @@ variable "databricks_workspace_url" {
 # Full Azure resource ID of the Databricks workspace (required for OIDC)
 variable "databricks_workspace_id" {
   type        = string
+  default     = ""
   description = "Full Azure resource ID for the Databricks workspace"
 }
 
@@ -38,11 +39,13 @@ variable "databricks_workspace_id" {
 # ======================================================
 variable "azure_client_id" {
   type        = string
+  default     = ""
   description = "Azure AD app client ID for OIDC auth to Databricks"
 }
 
 variable "azure_tenant_id" {
   type        = string
+  default     = ""
   description = "Azure AD tenant ID for OIDC auth"
 }
 
