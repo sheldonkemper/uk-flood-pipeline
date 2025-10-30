@@ -56,10 +56,19 @@ jobs:
             echo "TFVARS=envs/dev.tfvars" >> $GITHUB_OUTPUT
           fi
       
-      - name: Export Databricks env
+      - name: Export Databricks env (PAT for now)
         run: |
-          echo "TF_VAR_databricks_host=${DATABRICKS_HOST}"  >> $GITHUB_ENV
+          echo "TF_VAR_databricks_workspace_url=${DATABRICKS_HOST}" >> $GITHUB_ENV
           echo "TF_VAR_databricks_token=${DATABRICKS_TOKEN}" >> $GITHUB_ENV
+
+      # Future OIDC block — do NOT enable yet
+      # - name: Export Databricks env (OIDC, future)
+      #   run: |
+      #     echo "TF_VAR_databricks_workspace_url=${DATABRICKS_HOST}" >> $GITHUB_ENV
+      #     echo "TF_VAR_databricks_workspace_id=${{ secrets.AZURE_DATABRICKS_WORKSPACE_ID }}" >> $GITHUB_ENV
+      #     echo "TF_VAR_azure_client_id=${{ secrets.AZURE_CLIENT_ID }}" >> $GITHUB_ENV
+      #     echo "TF_VAR_azure_tenant_id=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
+
 
       - name: Terraform init
         working-directory: terraform

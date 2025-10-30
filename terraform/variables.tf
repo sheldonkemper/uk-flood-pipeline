@@ -21,23 +21,40 @@ variable "resource_group_name" {
   default     = "rg-uksouth-flood-dev"
 }
 
+# Workspace URL (works for both PAT and OIDC)
+variable "databricks_workspace_url" {
+  type        = string
+  description = "Workspace host URL (https://adb-xxx.azuredatabricks.net)"
+}
+
+# Full Azure resource ID of the Databricks workspace (required for OIDC)
 variable "databricks_workspace_id" {
   type        = string
-  description = "Azure resource ID of the Databricks workspace (paste from outputs after phase 1)"
+  description = "Full Azure resource ID for the Databricks workspace"
+}
+
+# ======================================================
+# OIDC for Databricks (future cutover)
+# ======================================================
+variable "azure_client_id" {
+  type        = string
+  description = "Azure AD app client ID for OIDC auth to Databricks"
+}
+
+variable "azure_tenant_id" {
+  type        = string
+  description = "Azure AD tenant ID for OIDC auth"
+}
+
+# ======================================================
+# PAT authentication (temporary fallback)
+# ======================================================
+variable "databricks_token" {
+  type        = string
+  description = "Personal Access Token for Databricks authentication (temporary auth method)"
   default     = ""
 }
 
-# Optional: only needed if you ever switch the provider to PAT auth
-variable "databricks_workspace_url" {
-  type        = string
-  description = "Workspace host URL (https://adb-...azuredatabricks.net)"
-  default     = ""
-}
-variable "databricks_token" {
-  type        = string
-  description = "Personal Access Token for Databricks authentication"
-  default     = ""
-}
 # ======================================================
 # Cluster configuration (single-user dev)
 # ======================================================
