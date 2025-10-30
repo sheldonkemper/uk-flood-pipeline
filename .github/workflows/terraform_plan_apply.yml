@@ -21,20 +21,14 @@ jobs:
       contents: read
 
     env:
-      ARM_USE_OIDC: true
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Debug secrets scope
-        run: |
-          echo "Client ID: ${{ secrets.AZURE_CLIENT_ID }}"
-          echo "Tenant ID: ${{ secrets.AZURE_TENANT_ID }}"
-          echo "Sub ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}"
 
       - name: Azure login (OIDC)
         uses: azure/login@v2
@@ -43,7 +37,8 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Export Azure backend auth env
+      # Backend only auth (OIDC)
+      - name: Export Azure backend auth
         run: |
           echo "ARM_USE_OIDC=true" >> $GITHUB_ENV
           echo "ARM_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }}" >> $GITHUB_ENV
@@ -64,7 +59,13 @@ jobs:
             echo "TFVARS=envs/dev.tfvars" >> $GITHUB_OUTPUT
           fi
 
-      - name: Reset Terraform working dir
+      # ✅ Databricks PAT mode
+      - name: Export Databricks PAT env
+        run: |
+          echo "TF_VAR_databricks_workspace_url=${DATABRICKS_HOST}" >> $GITHUB_ENV
+          echo "TF_VAR_databricks_token=${{ secrets.DATABRICKS_TOKEN }}" >> $GITHUB_ENV
+
+      - name: Reset Terraform dir
         working-directory: terraform
         run: rm -rf .terraform
 
@@ -72,26 +73,12 @@ jobs:
         working-directory: terraform
         run: terraform init
 
-      - name: Get Databricks Workspace ID
-        id: wsid
-        working-directory: terraform
-        run: |
-          echo "WS_ID=$(terraform output -raw databricks_workspace_id)" >> $GITHUB_ENV
-          echo "Workspace ID detected: $(terraform output -raw databricks_workspace_id)"
-
-      - name: Set Databricks TF vars (temporary transition)
-        run: |
-          echo "TF_VAR_databricks_workspace_url=${DATABRICKS_HOST}" >> $GITHUB_ENV
-          echo "TF_VAR_databricks_workspace_id=${WS_ID}" >> $GITHUB_ENV
-          echo "TF_VAR_azure_client_id=${{ secrets.AZURE_CLIENT_ID }}" >> $GITHUB_ENV
-          echo "TF_VAR_azure_tenant_id=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
-
-      - name: Terraform plan (PRs only)
+      - name: Terraform plan (PR)
         if: github.event_name == 'pull_request'
         working-directory: terraform
         run: terraform plan -var-file=${{ steps.pick.outputs.TFVARS }}
 
-      - name: Terraform apply (manual only)
+      - name: Terraform apply (manual)
         if: github.event_name == 'workflow_dispatch'
         working-directory: terraform
         run: terraform apply -auto-approve -var-file=${{ steps.pick.outputs.TFVARS }}
