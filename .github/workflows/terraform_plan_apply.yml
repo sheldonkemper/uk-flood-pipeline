@@ -19,13 +19,13 @@ jobs:
     permissions:
       id-token: write
       contents: read
+
     env:
       ARM_USE_OIDC: true
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4
@@ -64,18 +64,6 @@ jobs:
             echo "TFVARS=envs/dev.tfvars" >> $GITHUB_OUTPUT
           fi
 
-      - name: Export Databricks env (PAT for now)
-        run: |
-          echo "TF_VAR_databricks_workspace_url=${DATABRICKS_HOST}" >> $GITHUB_ENV
-          echo "TF_VAR_databricks_token=${DATABRICKS_TOKEN}" >> $GITHUB_ENV
-
-      - name: Prevent TF variable prompts (temporary)
-        run: |
-          echo "TF_VAR_azure_client_id=" >> $GITHUB_ENV
-          echo "TF_VAR_azure_tenant_id=" >> $GITHUB_ENV
-          echo "TF_VAR_databricks_workspace_id=" >> $GITHUB_ENV
-          echo "TF_VAR_databricks_workspace_url=" >> $GITHUB_ENV
-
       - name: Reset Terraform working dir
         working-directory: terraform
         run: rm -rf .terraform
@@ -83,6 +71,20 @@ jobs:
       - name: Terraform init
         working-directory: terraform
         run: terraform init
+
+      - name: Get Databricks Workspace ID
+        id: wsid
+        working-directory: terraform
+        run: |
+          echo "WS_ID=$(terraform output -raw databricks_workspace_id)" >> $GITHUB_ENV
+          echo "Workspace ID detected: $(terraform output -raw databricks_workspace_id)"
+
+      - name: Set Databricks TF vars (temporary transition)
+        run: |
+          echo "TF_VAR_databricks_workspace_url=${DATABRICKS_HOST}" >> $GITHUB_ENV
+          echo "TF_VAR_databricks_workspace_id=${WS_ID}" >> $GITHUB_ENV
+          echo "TF_VAR_azure_client_id=${{ secrets.AZURE_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "TF_VAR_azure_tenant_id=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
 
       - name: Terraform plan (PRs only)
         if: github.event_name == 'pull_request'
