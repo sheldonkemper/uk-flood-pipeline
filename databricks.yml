@@ -2,7 +2,7 @@ bundle:
   name: uk-flood-pipeline
 
 include:
-  - workflows/**
+  - jobs/**
   - pipelines/**
 
 targets:
@@ -12,3 +12,19 @@ targets:
     workspace:
       host: https://adb-3577787633845022.2.azuredatabricks.net
       root_path: /Users/sheldon.kemper@outlook.com/flood-monitoring
+    run_as:
+      user_name: sheldon.kemper@outlook.com
+    permissions:
+      - level: CAN_MANAGE
+        user_name: sheldon.kemper@outlook.com
+
+  prod:
+    mode: production
+    workspace:
+      host: https://adb-3577787633845022.2.azuredatabricks.net
+      root_path: /Projects/flood-monitoring/prod
+    run_as:
+      service_principal_name: <to-be-added-sp>
+    permissions:
+      - level: CAN_MANAGE
+        service_principal_name: <to-be-added-sp>
