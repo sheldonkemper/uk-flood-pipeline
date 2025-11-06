@@ -1,33 +1,45 @@
 name: bundle-validate-deploy
+
 on:
   pull_request:
-    paths: ["**/bundle.yml", "dlt/**"]
+    paths:
+      - "**/bundle.yml"
+      - "pipelines/**"
   push:
-    branches: ["develop","main"]
-    paths: ["**/bundle.yml","dlt/**"]
+    branches: ["develop", "main"]
+    paths:
+      - "**/bundle.yml"
+      - "pipelines/**"
 
 jobs:
   validate:
+    name: Validate Bundle
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: databricks/setup-cli@v1
+      - name: Set up Databricks CLI
+        uses: databricks/setup-databricks-cli@v2
+        with:
+          databricks-host: ${{ secrets.DATABRICKS_HOST }}
+          databricks-token: ${{ secrets.DATABRICKS_TOKEN }}
       - name: Validate
-        env:
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: databricks bundle validate
 
   deploy:
+    name: Deploy Bundle
     if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
     needs: validate
     runs-on: ubuntu-latest
     environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
     steps:
       - uses: actions/checkout@v4
-      - uses: databricks/setup-cli@v1
+      - name: Set up Databricks CLI
+        uses: databricks/setup-databricks-cli@v2
+        with:
+          databricks-host: ${{ secrets.DATABRICKS_HOST }}
+          databricks-token: ${{ secrets.DATABRICKS_TOKEN }}
       - name: Deploy
-        env:
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-        run: databricks bundle deploy --target ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
+        run: |
+          TARGET=$([ "${GITHUB_REF##*/}" = "main" ] && echo "prod" || echo "dev")
+          echo "Deploying bundle to target: $TARGET"
+          databricks bundle deploy --target "$TARGET"
