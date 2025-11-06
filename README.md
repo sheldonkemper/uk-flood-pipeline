@@ -195,7 +195,6 @@ All tables are created under Unity Catalog with environment separation:
 * Add data quality expectations to Delta Live Tables.
 * Integrate system tables for observability.
 * Extend CI/CD with automated tests and rollback.
-* Add ODIS Logger for telemetry and event tracing.
 
 ---
 
