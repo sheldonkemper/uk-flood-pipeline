@@ -18,6 +18,37 @@ targets:
       - level: CAN_MANAGE
         user_name: sheldon.kemper@outlook.com
 
+    resources:
+      pipelines:
+        bronze_ingest:
+          name: UK Flood Monitoring - Bronze Ingest
+          development: true
+          continuous: false
+          channel: CURRENT
+          photon: true
+          serverless: true
+          edition: ADVANCED
+
+          # Default publishing mode: omit 'target'
+          catalog: flood_dev
+
+          configuration:
+            pipelines.publishToLegacyMode: "false"
+            pipeline.max_records: "100"
+            pipeline.limit_per_page: "100"
+
+          libraries:
+            - notebook:
+                path: ./notebooks/pipelines/bronze_ingest.ipynb
+
+      jobs:
+        bronze_ingest_job:
+          name: UK Flood Monitoring - Bronze Ingest Job
+          tasks:
+            - task_key: bronze_ingest
+              pipeline_task:
+                pipeline_id: ${resources.pipelines.bronze_ingest.id}
+
   prod:
     mode: production
     workspace:
@@ -28,3 +59,31 @@ targets:
     permissions:
       - level: CAN_MANAGE
         service_principal_name: <to-be-added-sp>
+
+    resources:
+      pipelines:
+        bronze_ingest:
+          name: UK Flood Monitoring - Bronze Ingest (Prod)
+          continuous: true
+          channel: CURRENT
+          photon: true
+          serverless: true
+          edition: ADVANCED
+          catalog: flood_prod
+
+          configuration:
+            pipelines.publishToLegacyMode: "false"
+            pipeline.max_records: "100"
+            pipeline.limit_per_page: "100"
+
+          libraries:
+            - notebook:
+                path: ./notebooks/pipelines/bronze_ingest.ipynb
+
+      jobs:
+        bronze_ingest_job:
+          name: UK Flood Monitoring - Bronze Ingest Job (Prod)
+          tasks:
+            - task_key: bronze_ingest
+              pipeline_task:
+                pipeline_id: ${resources.pipelines.bronze_ingest.id}
