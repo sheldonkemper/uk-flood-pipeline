@@ -1,0 +1,25 @@
+resources:
+  pipelines:
+    uk_flood_monitoring_pipeline:
+      name: UK Flood Monitoring – Bronze, Silver & Gold
+      photon: true
+      serverless: true
+      edition: ADVANCED
+      catalog: ${var.catalog}
+      schema: ${var.schema}
+      channel: CURRENT
+      continuous: false
+
+      configuration:
+        pipelines.publishToLegacyMode: "false"
+        pipelines.enableSystemTables: "true"
+        pipeline.max_records: ${var.max_records}
+        pipeline.limit_per_page: ${var.limit_per_page}
+
+      libraries:
+        - notebook:
+            path: ../notebooks/pipelines/bronze_ingest.ipynb
+        - notebook:
+            path: ../notebooks/pipelines/silver_transform.ipynb
+        - notebook:
+            path: ../notebooks/pipelines/gold_aggregates.ipynb

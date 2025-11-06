@@ -1,0 +1,8 @@
+resources:
+  jobs:
+    uk_flood_monitoring_job:
+      name: UK Flood Monitoring – Full Pipeline Job
+      tasks:
+        - task_key: dlt_pipeline
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.uk_flood_monitoring_pipeline.id}

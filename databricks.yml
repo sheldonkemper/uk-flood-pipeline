@@ -2,8 +2,27 @@ bundle:
   name: uk-flood-pipeline
 
 include:
-  - jobs/**
-  - pipelines/**
+  - ./pipelines/*.yml
+  - ./jobs/*.yml
+
+sync:
+  include:
+    - notebooks/**
+  exclude:
+    - "**/__pycache__/**"
+    - "**/*.log"
+    - "**/*.tmp"
+
+variables:
+  catalog:
+    default: flood_dev
+    description: "Unity Catalog where all pipeline tables are registered."
+  schema:
+    default: bronze
+  max_records:
+    default: "100"
+  limit_per_page:
+    default: "100"
 
 targets:
   dev:
@@ -14,40 +33,6 @@ targets:
       root_path: /Users/sheldon.kemper@outlook.com/flood-monitoring
     run_as:
       user_name: sheldon.kemper@outlook.com
-    permissions:
-      - level: CAN_MANAGE
-        user_name: sheldon.kemper@outlook.com
-
-    resources:
-      pipelines:
-        bronze_ingest:
-          name: UK Flood Monitoring - Bronze Ingest
-          development: true
-          continuous: false
-          channel: CURRENT
-          photon: true
-          serverless: true
-          edition: ADVANCED
-
-          # Default publishing mode: omit 'target'
-          catalog: flood_dev
-
-          configuration:
-            pipelines.publishToLegacyMode: "false"
-            pipeline.max_records: "100"
-            pipeline.limit_per_page: "100"
-
-          libraries:
-            - notebook:
-                path: ./notebooks/pipelines/bronze_ingest.ipynb
-
-      jobs:
-        bronze_ingest_job:
-          name: UK Flood Monitoring - Bronze Ingest Job
-          tasks:
-            - task_key: bronze_ingest
-              pipeline_task:
-                pipeline_id: ${resources.pipelines.bronze_ingest.id}
 
   prod:
     mode: production
@@ -56,34 +41,3 @@ targets:
       root_path: /Projects/flood-monitoring/prod
     run_as:
       service_principal_name: <to-be-added-sp>
-    permissions:
-      - level: CAN_MANAGE
-        service_principal_name: <to-be-added-sp>
-
-    resources:
-      pipelines:
-        bronze_ingest:
-          name: UK Flood Monitoring - Bronze Ingest (Prod)
-          continuous: true
-          channel: CURRENT
-          photon: true
-          serverless: true
-          edition: ADVANCED
-          catalog: flood_prod
-
-          configuration:
-            pipelines.publishToLegacyMode: "false"
-            pipeline.max_records: "100"
-            pipeline.limit_per_page: "100"
-
-          libraries:
-            - notebook:
-                path: ./notebooks/pipelines/bronze_ingest.ipynb
-
-      jobs:
-        bronze_ingest_job:
-          name: UK Flood Monitoring - Bronze Ingest Job (Prod)
-          tasks:
-            - task_key: bronze_ingest
-              pipeline_task:
-                pipeline_id: ${resources.pipelines.bronze_ingest.id}
